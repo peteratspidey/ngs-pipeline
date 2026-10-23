@@ -262,7 +262,7 @@ elif [ -n "${INPUT_PATTERN}" ]; then
     NF_ARGS+=(--input "${INPUT_PATTERN}")
 else
     mkdir -p "${INPUT_DIR}"
-    FASTQ_COUNT=$(find "${INPUT_DIR}" -maxdepth 1 -name "*_{R1,R2}*.fastq.gz" 2>/dev/null | wc -l)
+    FASTQ_COUNT=$(find "${INPUT_DIR}" -maxdepth 1 \( -name "*_R1*.fastq*" -o -name "*_R2*.fastq*" -o -name "*_1*.fastq*" -o -name "*_2*.fastq*" \) 2>/dev/null | wc -l)
     if [ "${FASTQ_COUNT}" -eq 0 ]; then
         echo "========================================================================"
         echo " Notice: No paired-end FASTQ files found in ${INPUT_DIR}/"
