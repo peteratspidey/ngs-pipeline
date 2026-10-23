@@ -1,0 +1,7 @@
+sample_id,condition,replicate,fastq_r1,fastq_r2
+sample_01,control,1,data/sample_01_R1.fastq.gz,data/sample_01_R2.fastq.gz
+sample_02,control,2,data/sample_02_R1.fastq.gz,data/sample_02_R2.fastq.gz
+sample_03,control,3,data/sample_03_R1.fastq.gz,data/sample_03_R2.fastq.gz
+sample_04,treatment,1,data/sample_04_R1.fastq.gz,data/sample_04_R2.fastq.gz
+sample_05,treatment,2,data/sample_05_R1.fastq.gz,data/sample_05_R2.fastq.gz
+sample_06,treatment,3,data/sample_06_R1.fastq.gz,data/sample_06_R2.fastq.gz

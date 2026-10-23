@@ -1,0 +1,53 @@
+name: ngs-pipeline
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  # Core tools
+  - nextflow=23.10.0
+  - python=3.11
+  - openjdk=11
+  
+  # Quality Control
+  - fastqc=0.11.9
+  - multiqc=1.14
+  - fastp=0.23.2
+  
+  # Trimming
+  - cutadapt=4.4
+  - trimmomatic=0.39
+  
+  # Alignment
+  - bwa=0.7.17
+  - bowtie2=2.5.1
+  - samtools=1.17
+  
+  # Variant Calling
+  - gatk4=4.5.0.0
+  - freebayes=1.3.6
+  - bcftools=1.17
+  
+  # Annotation
+  - snpeff=5.1d
+  - vep=108.0
+  
+  # Utilities
+  - bedtools=2.31.0
+  - tabix=0.2.6
+  - bgzip=1.17
+  - htslib=1.17
+  
+  # Python packages
+  - pip
+  - numpy
+  - pandas
+  - matplotlib
+  - seaborn
+  
+  # Pip packages
+  - pip:
+    - multiqc[pdf]==1.14
+    - pandas==2.1.0
+    - numpy==1.24.3
+    - scipy==1.11.0

@@ -1,0 +1,32 @@
+# Nextflow runtime & work directory
+.nextflow/
+.nextflow.log*
+nxf-tmp*
+work/
+
+# Execution reports
+pipeline_report.html
+pipeline_timeline.html
+pipeline_trace.txt
+pipeline_dag.html
+
+# Local downloaded binary tools (downloaded on demand)
+bin/nextflow
+bin/gh
+
+# Intermediate analysis results
+results/
+test_results/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# OS / Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
