@@ -62,7 +62,26 @@ workflow {
             .set { grouped_reads_ch }
     }
 
-    // Reference genome channel
+    // Reference genome channel & validation
+    if (!params.fasta) {
+        def default_hg19 = "${workflow.projectDir}/resources/genomes/hg19/hg19.fa"
+        def test_fa      = "${workflow.projectDir}/resources/genomes/test/test.fa"
+        if (file(default_hg19).exists()) {
+            params.fasta = default_hg19
+        } else if (file(test_fa).exists()) {
+            params.fasta = test_fa
+        } else {
+            error "\n" +
+                  "========================================================================\n" +
+                  " ERROR: Reference genome FASTA not found!\n" +
+                  " \n" +
+                  " Please do one of the following:\n" +
+                  "   1. Download hg19 reference: ./scripts/download_references.sh\n" +
+                  "   2. Specify your FASTA file:  --fasta /path/to/hg19.fa\n" +
+                  "   3. Run quick self-contained test: ./run_pipeline.sh --test\n" +
+                  "========================================================================"
+        }
+    }
     fasta_file = file(params.fasta)
     genome_ch = Channel.of(tuple(params.genome, fasta_file))
 

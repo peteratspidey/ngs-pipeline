@@ -254,17 +254,50 @@ NF_ARGS=(
     --annotator "${ANNOTATOR}"
 )
 
+export NXF_CHECK_VERSION=false
+
 if [ -n "${SAMPLE_SHEET}" ]; then
     NF_ARGS+=(--sample_sheet "${SAMPLE_SHEET}")
 elif [ -n "${INPUT_PATTERN}" ]; then
     NF_ARGS+=(--input "${INPUT_PATTERN}")
 else
     mkdir -p "${INPUT_DIR}"
+    FASTQ_COUNT=$(find "${INPUT_DIR}" -maxdepth 1 -name "*_{R1,R2}*.fastq.gz" 2>/dev/null | wc -l)
+    if [ "${FASTQ_COUNT}" -eq 0 ]; then
+        echo "========================================================================"
+        echo " Notice: No paired-end FASTQ files found in ${INPUT_DIR}/"
+        echo ""
+        echo " Please do one of the following:"
+        echo "   1. Download a test sample (~16MB each):"
+        echo "      ./scripts/download_test_data.sh TEST_SAMPLE"
+        echo ""
+        echo "   2. Copy your paired-end FASTQs into ${INPUT_DIR}/"
+        echo "      (e.g., SAMPLE_R1.fastq.gz and SAMPLE_R2.fastq.gz)"
+        echo ""
+        echo "   3. Run the quick report generator test:"
+        echo "      ./run_pipeline.sh --test"
+        echo "========================================================================"
+        exit 1
+    fi
     NF_ARGS+=(--input "${INPUT_DIR}/*_{R1,R2}*.fastq.gz")
 fi
 
 if [ -f "${FASTA}" ]; then
     NF_ARGS+=(--fasta "${FASTA}")
+elif [ -f "${SCRIPT_DIR}/resources/genomes/test/test.fa" ]; then
+    NF_ARGS+=(--fasta "${SCRIPT_DIR}/resources/genomes/test/test.fa")
+else
+    echo "========================================================================"
+    echo " Notice: Reference genome not found at: ${FASTA}"
+    echo ""
+    echo " Please do one of the following:"
+    echo "   1. Download and index hg19 reference (~3GB):"
+    echo "      ./scripts/download_references.sh"
+    echo ""
+    echo "   2. Provide your existing reference FASTA:"
+    echo "      ./run_pipeline.sh -f /path/to/hg19.fa"
+    echo "========================================================================"
+    exit 1
 fi
 
 if [ -f "${BED}" ]; then
