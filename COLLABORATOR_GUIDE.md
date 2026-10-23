@@ -205,3 +205,4 @@ Nextflow caches intermediate files in `work/`. Simply rerun your previous comman
 ## 9. Contact & Support
 - **Repository Issues**: [https://github.com/peteratspidey/ngs-pipeline/issues](https://github.com/peteratspidey/ngs-pipeline/issues)
 - **Author**: Peter (`peteratspidey`)
+

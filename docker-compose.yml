@@ -16,3 +16,4 @@ services:
     environment:
       - NXF_HOME=/work/.nextflow
     command: ["run", "main.nf", "-profile", "standard", "--input", "/data/*_{R1,R2}*.fastq.gz", "--outdir", "/results"]
+

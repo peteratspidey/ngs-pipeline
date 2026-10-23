@@ -11,7 +11,6 @@ pipeline_trace.txt
 pipeline_dag.html
 
 # Local downloaded binary tools (downloaded on demand)
-bin/nextflow
 bin/gh
 
 # Intermediate analysis results

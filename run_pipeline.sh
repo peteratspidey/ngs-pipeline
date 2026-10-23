@@ -14,17 +14,100 @@ cd "${SCRIPT_DIR}"
 export NXF_HOME="${SCRIPT_DIR}/.nextflow"
 mkdir -p "${NXF_HOME}"
 
-if [ -x "${SCRIPT_DIR}/bin/nextflow" ]; then
-    NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
-elif command -v nextflow >/dev/null 2>&1; then
-    NEXTFLOW_BIN="$(command -v nextflow)"
-else
-    echo "==> Nextflow not found. Downloading Nextflow..."
-    curl -fsSL https://get.nextflow.io | bash
-    mv nextflow "${SCRIPT_DIR}/bin/nextflow"
-    chmod +x "${SCRIPT_DIR}/bin/nextflow"
-    NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
-fi
+# Ensure bin directory exists
+mkdir -p "${SCRIPT_DIR}/bin"
+
+USE_DOCKER_NEXTFLOW=false
+NEXTFLOW_BIN=""
+
+ensure_nextflow() {
+    # 1. Check local bin/nextflow
+    if [ -x "${SCRIPT_DIR}/bin/nextflow" ]; then
+        NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
+        return 0
+    fi
+
+    # 2. Check system PATH
+    if command -v nextflow >/dev/null 2>&1; then
+        NEXTFLOW_BIN="$(command -v nextflow)"
+        return 0
+    fi
+
+    echo "========================================================================"
+    echo " Nextflow not found. Initializing automatic download..."
+    echo "========================================================================"
+
+    # Method A: Direct release binary download (fast, reliable, no GitHub API limits)
+    echo "--> Downloading Nextflow executable from GitHub Releases..."
+    if curl -fsSL -o "${SCRIPT_DIR}/bin/nextflow" "https://github.com/nextflow-io/nextflow/releases/download/v23.10.1/nextflow" 2>/dev/null; then
+        chmod +x "${SCRIPT_DIR}/bin/nextflow"
+        NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
+        echo " Nextflow downloaded successfully to ${NEXTFLOW_BIN}"
+        return 0
+    fi
+
+    # Method B: Official get.nextflow.io installer
+    echo "--> Trying get.nextflow.io installer..."
+    if curl -fsSL https://get.nextflow.io 2>/dev/null | bash 2>/dev/null; then
+        if [ -f nextflow ]; then
+            mv nextflow "${SCRIPT_DIR}/bin/nextflow"
+            chmod +x "${SCRIPT_DIR}/bin/nextflow"
+            NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
+            echo " Nextflow downloaded successfully."
+            return 0
+        fi
+    fi
+
+    # Method C: wget fallback
+    if command -v wget >/dev/null 2>&1; then
+        echo "--> Trying wget download..."
+        if wget -q -O "${SCRIPT_DIR}/bin/nextflow" "https://github.com/nextflow-io/nextflow/releases/download/v23.10.1/nextflow"; then
+            chmod +x "${SCRIPT_DIR}/bin/nextflow"
+            NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
+            echo " Nextflow downloaded successfully via wget."
+            return 0
+        fi
+    fi
+
+    # Method D: Docker fallback
+    if command -v docker >/dev/null 2>&1; then
+        echo "==> Host Nextflow binary download blocked. Falling back to containerized Nextflow runner via Docker..."
+        USE_DOCKER_NEXTFLOW=true
+        return 0
+    fi
+
+    echo "ERROR: Could not download Nextflow automatically and Docker is not available."
+    echo "Please run: curl -fsSL https://get.nextflow.io | bash && mv nextflow bin/"
+    exit 1
+}
+
+ensure_java() {
+    if command -v java >/dev/null 2>&1; then
+        return 0
+    fi
+
+    echo "==> Java runtime not found on host."
+    if command -v docker >/dev/null 2>&1; then
+        echo " Docker is available: will execute Nextflow containerized (no host Java required)."
+        USE_DOCKER_NEXTFLOW=true
+        return 0
+    fi
+
+    echo "==> Attempting auto-install of Java 17 runtime..."
+    if command -v apt-get >/dev/null 2>&1 && [ "$(id -u)" -eq 0 ]; then
+        apt-get update && apt-get install -y default-jre-headless
+    elif command -v conda >/dev/null 2>&1; then
+        conda install -y -c conda-forge openjdk=17
+    else
+        echo "========================================================================"
+        echo " Notice: Nextflow requires Java 11 or later (or Docker)."
+        echo " To install on Ubuntu/Debian: sudo apt-get update && sudo apt-get install -y default-jre-headless"
+        echo "========================================================================"
+    fi
+}
+
+ensure_nextflow
+ensure_java
 
 INPUT_DIR="${SCRIPT_DIR}/data"
 INPUT_PATTERN=""
@@ -165,8 +248,19 @@ if [ -f "${BED}" ]; then
     NF_ARGS+=(--bed "${BED}")
 fi
 
-echo "==> Launching Pipeline Execution..."
-"${NEXTFLOW_BIN}" "${NF_ARGS[@]}"
+if [ "${USE_DOCKER_NEXTFLOW}" = true ]; then
+    echo "==> Launching Pipeline via Dockerized Nextflow..."
+    docker run -i --rm \
+        -u "$(id -u):$(id -g)" \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v "${SCRIPT_DIR}:${SCRIPT_DIR}" \
+        -w "${SCRIPT_DIR}" \
+        -e NXF_HOME="${NXF_HOME}" \
+        nextflow/nextflow:23.10.1 "${NF_ARGS[@]}"
+else
+    echo "==> Launching Pipeline Execution..."
+    "${NEXTFLOW_BIN}" "${NF_ARGS[@]}"
+fi
 
 echo ""
 echo "========================================================================"
