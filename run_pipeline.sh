@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
-# ==============================================================================
-# Biokart WES Pipeline - One-Click Execution Wrapper
-# Runs the full Next Generation Sequencing Whole Exome Sequencing pipeline
-# ==============================================================================
 
 set -euo pipefail
 
@@ -15,11 +11,9 @@ done
 SCRIPT_DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
 cd "${SCRIPT_DIR}"
 
-# Set local Nextflow home directory to prevent root/home permission issues
 export NXF_HOME="${SCRIPT_DIR}/.nextflow"
 mkdir -p "${NXF_HOME}"
 
-# Determine Nextflow binary
 if [ -x "${SCRIPT_DIR}/bin/nextflow" ]; then
     NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
 elif command -v nextflow >/dev/null 2>&1; then
@@ -32,7 +26,6 @@ else
     NEXTFLOW_BIN="${SCRIPT_DIR}/bin/nextflow"
 fi
 
-# Default parameters
 INPUT_DIR="${SCRIPT_DIR}/data"
 INPUT_PATTERN=""
 SAMPLE_SHEET=""
@@ -46,12 +39,10 @@ ANNOTATOR="annovar"
 PROFILE="standard"
 TEST_MODE=false
 
-# Auto-detect container engine
 if ! command -v docker >/dev/null 2>&1; then
     PROFILE="nocontainer"
 fi
 
-# Help message
 usage() {
     cat <<EOF
 Usage: ./run_pipeline.sh [OPTIONS]
@@ -68,19 +59,13 @@ Options:
   -h, --help                  Show this help message
 
 Examples:
-  # 1. Run quick test mode
   ./run_pipeline.sh --test
-
-  # 2. Run with FASTQ files in data/
   ./run_pipeline.sh -i 'data/*_{R1,R2}*.fastq.gz'
-
-  # 3. Run with a sample sheet and custom exome BED
   ./run_pipeline.sh -s resources/sample_sheet.csv -b resources/my_targets.bed
 EOF
     exit 0
 }
 
-# Parse CLI options
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -i|--input)
@@ -146,7 +131,6 @@ if [ "${TEST_MODE}" = true ]; then
     exit 0
 fi
 
-# Build Nextflow CLI arguments
 NF_ARGS=(
     run "${SCRIPT_DIR}/main.nf"
     -profile "${PROFILE}"
@@ -174,7 +158,6 @@ if [ -f "${BED}" ]; then
     NF_ARGS+=(--bed "${BED}")
 fi
 
-# Execute Nextflow
 echo "==> Launching Pipeline Execution..."
 "${NEXTFLOW_BIN}" "${NF_ARGS[@]}"
 
