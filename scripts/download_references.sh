@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Biokart WES Pipeline - Reference Data Download & Preparation Script
+# NGS WES Pipeline - Reference Data Download & Preparation Script
 # Downloads and prepares human reference genome hg19 (GRCh37), dbSNP,
 # Mills/1000G Indels, and ANNOVAR databases for reproducible analysis.
 # ==============================================================================
@@ -15,7 +15,7 @@ mkdir -p "${GENOMES_DIR}"
 mkdir -p "${ANNOVAR_DIR}"
 
 echo "======================================================================"
-echo " Preparing Reference Files for Biokart WES Pipeline (hg19 / GRCh37)"
+echo " Preparing Reference Files for NGS WES Pipeline (hg19 / GRCh37)"
 echo " Base Directory: ${BASE_DIR}"
 echo "======================================================================"
 

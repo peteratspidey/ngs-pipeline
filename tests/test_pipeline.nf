@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 /**
- * Biokart WES Pipeline - Integration Test Suite
+ * NGS WES Pipeline - Integration Test Suite
  * Validates individual modules and pipeline flow
  */
 
@@ -29,7 +29,7 @@ params {
 }
 
 workflow {
-    log.info "Starting Biokart WES Test Suite"
+    log.info "Starting NGS WES Test Suite"
 
     // Reads channel
     Channel
@@ -61,5 +61,5 @@ workflow {
         Channel.empty()
     )
 
-    log.info "Biokart WES Test Setup Passed"
+    log.info "NGS WES Test Setup Passed"
 }

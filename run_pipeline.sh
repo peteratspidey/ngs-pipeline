@@ -224,7 +224,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 echo "========================================================================"
-echo "          BIOKART WHOLE EXOME SEQUENCING (WES) PIPELINE                "
+echo "          NGS WHOLE EXOME SEQUENCING (WES) PIPELINE                "
 echo "========================================================================"
 echo " Nextflow Binary : ${NEXTFLOW_BIN}"
 echo " Execution Profile: ${PROFILE}"

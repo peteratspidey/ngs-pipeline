@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Generate Biokart WES Pipeline QC and Variant Summary Tables
+Generate NGS WES Pipeline QC and Variant Summary Tables
 Matches:
 - Table 1: QC stats of paired reads sequences before and after quality trimming
 - Table 2: Number of variants called in the sample (Total SNV & small InDels)
@@ -272,7 +272,7 @@ def generate_table2(samples, variants_dir, out_tsv, out_html):
     print(f"[Report] Generated Table 2: {out_tsv} and {out_html}")
 
 def main():
-    parser = argparse.ArgumentParser(description="Generate Biokart NGS QC and Variant Tables")
+    parser = argparse.ArgumentParser(description="Generate NGS NGS QC and Variant Tables")
     parser.add_argument("--samples", required=True, help="Comma-separated sample names or sample list")
     parser.add_argument("--raw-qc-dir", default="./results/qc/fastqc_raw", help="Raw FastQC directory")
     parser.add_argument("--trimmed-qc-dir", default="./results/qc/fastqc_trimmed", help="Trimmed FastQC directory")

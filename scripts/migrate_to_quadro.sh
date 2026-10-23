@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ==============================================================================
-# Biokart WES Pipeline - Quadro Workstation Migration Helper
+# NGS WES Pipeline - Quadro Workstation Migration Helper
 # Facilitates moving and deploying the pipeline onto a Quadro workstation
 # ==============================================================================
 

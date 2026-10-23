@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 
 /**
- * Biokart WES Pipeline - Next Generation Sequencing Analysis Pipeline
+ * NGS WES Pipeline - Next Generation Sequencing Analysis Pipeline
  * 
  * Whole Exome Sequencing (WES) SNV and InDel Analysis Pipeline:
  * - Quality control: FastQC & MultiQC (Raw and Trimmed)
@@ -33,7 +33,7 @@ include { WORKFLOW_REPORT }       from './workflows/report.nf'
 workflow {
     log.info """
     ===================================================================
-     BIOKART WES ANALYSIS PIPELINE (hg19 / GRCh37)
+     NGS WES ANALYSIS PIPELINE (hg19 / GRCh37)
     ===================================================================
      Genome          : ${params.genome}
      Trimmer         : ${params.trimmer} (Quality cutoff: Q${params.quality_cutoff ?: 30})
@@ -132,7 +132,7 @@ workflow {
     }
 
     // --------------------------------------------------------------------------
-    // 7. FINAL REPORTS & BIOKART TABLES 1 & 2
+    // 7. FINAL REPORTS & NGS TABLES 1 & 2
     // --------------------------------------------------------------------------
     samples_list_ch = grouped_reads_ch.map { it[0] }.collect()
 

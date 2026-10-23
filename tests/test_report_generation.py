@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Unit and Integration Test for Biokart WES Report Tables (Table 1 & Table 2)
+Unit and Integration Test for NGS WES Report Tables (Table 1 & Table 2)
 Tests:
 1. Parsing FastQC zip/txt data before and after trimming
 2. Generating Table 1 matching Image 3 format

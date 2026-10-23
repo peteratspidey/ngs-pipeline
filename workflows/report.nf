@@ -2,7 +2,7 @@
 
 /**
  * Final Report Generation Workflow
- * Creates MultiQC report, Biokart Table 1 (QC stats), Table 2 (Variants called), and executive report
+ * Creates MultiQC report, NGS Table 1 (QC stats), Table 2 (Variants called), and executive report
  */
 
 nextflow.enable.dsl=2
@@ -74,7 +74,7 @@ workflow WORKFLOW_REPORT {
     variant_files
     
     main:
-    // 1. Generate Biokart Summary Tables (Table 1 & Table 2)
+    // 1. Generate NGS Summary Tables (Table 1 & Table 2)
     tables_ch = GENERATE_SUMMARY_TABLES(
         samples_list,
         raw_qc_files.collect().ifEmpty([]),

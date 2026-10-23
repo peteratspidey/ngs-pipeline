@@ -1,11 +1,11 @@
-# Biokart Whole Exome Sequencing (WES) Analysis Pipeline
+# NGS Whole Exome Sequencing (WES) Analysis Pipeline
 
 [![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A523.04.0-brightgreen.svg)](https://www.nextflow.io/)
 [![Docker](https://img.shields.io/badge/docker-available-blue.svg)](https://www.docker.com/)
 [![Genome](https://img.shields.io/badge/genome-hg19%2FGRCh37-blue.svg)](http://genome.ucsc.edu/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-A reproducible, production-ready Next Generation Sequencing (NGS) analysis pipeline built with **Nextflow** and **DSL2** conforming to the **Biokart India Pvt. Ltd. Whole Exome Sequencing (WES)** SNV and InDel analysis specification.
+A reproducible, production-ready Next Generation Sequencing (NGS) analysis pipeline built with **Nextflow** and **DSL2** conforming to the **NGS WES Whole Exome Sequencing (WES)** SNV and InDel analysis specification.
 
 ---
 

@@ -2,7 +2,7 @@
 
 /**
  * Variant Annotation Workflow
- * Supports ANNOVAR (Biokart WES specification), SnpEff, and VEP
+ * Supports ANNOVAR (NGS WES specification), SnpEff, and VEP
  */
 
 nextflow.enable.dsl=2

@@ -2,7 +2,7 @@
 """
 ANNOVAR Compatible VCF Annotation Fallback / Formatter
 Generates .hg19_multianno.txt and .hg19_multianno.vcf
-Conforming to Biokart India WES SNV & InDel Annotation Specifications
+Conforming to NGS WES WES SNV & InDel Annotation Specifications
 """
 
 import sys
