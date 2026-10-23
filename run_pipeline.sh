@@ -272,6 +272,16 @@ if [ -f "${BED}" ]; then
 fi
 
 if [ "${USE_DOCKER_NEXTFLOW}" = true ]; then
+    if ! docker image inspect nextflow/nextflow:23.10.1 >/dev/null 2>&1; then
+        echo "--> Pulling Nextflow container image (with auto-retry on connection drops)..."
+        for attempt in 1 2 3 4; do
+            if docker pull nextflow/nextflow:23.10.1; then
+                break
+            fi
+            echo "--> Download attempt ${attempt} interrupted by network. Retrying in 3 seconds..."
+            sleep 3
+        done
+    fi
     echo "==> Launching Pipeline via Dockerized Nextflow..."
     docker run -i --rm \
         -u "$(id -u):$(id -g)" \
