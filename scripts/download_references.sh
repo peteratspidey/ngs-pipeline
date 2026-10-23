@@ -52,7 +52,7 @@ if [ ! -f "${DICT}" ]; then
         picard CreateSequenceDictionary R="${FASTA}" O="${DICT}"
     elif command -v docker >/dev/null 2>&1; then
         echo "Creating sequence dictionary with GATK via Docker..."
-        docker run --rm -v "${GENOMES_DIR}:/data" broadinstitute/gatk:4.5.0.0 gatk CreateSequenceDictionary -R /data/hg19.fa -O /data/hg19.dict
+        docker run --rm -v "${GENOMES_DIR}:/data" quay.io/biocontainers/gatk4:4.5.0.0--py36hdfd78af_0 gatk CreateSequenceDictionary -R /data/hg19.fa -O /data/hg19.dict
     fi
 fi
 
