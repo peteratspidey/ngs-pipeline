@@ -3,6 +3,14 @@
 
 This guide walks you through setting up and running the Whole Exome Sequencing post-NGS analysis pipeline on your **NVIDIA Quadro workstation**.
 
+### Step 0: One-Time System Prerequisite (Java 17)
+
+Nextflow requires **Java 17 or later**. Install it with:
+
+```bash
+sudo apt update && sudo apt install -y openjdk-17-jre-headless
+```
+
 ---
 
 ### Step 1: Clone the Repository
