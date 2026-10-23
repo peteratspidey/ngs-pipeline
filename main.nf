@@ -19,7 +19,7 @@ nextflow.enable.dsl=2
 // WORKFLOW INCLUDES
 // ============================================================================
 
-include { WORKFLOW_QC }           from './workflows/qc.nf'
+include { WORKFLOW_QC as WORKFLOW_QC_RAW; WORKFLOW_QC as WORKFLOW_QC_TRIMMED } from './workflows/qc.nf'
 include { WORKFLOW_TRIM }         from './workflows/trim.nf'
 include { WORKFLOW_ALIGN }        from './workflows/align.nf'
 include { WORKFLOW_VARIANTS }     from './workflows/variants.nf'
@@ -89,7 +89,7 @@ workflow {
     // 1. QUALITY CONTROL (Raw reads)
     // --------------------------------------------------------------------------
     if (!params.skip_qc) {
-        raw_qc_res = WORKFLOW_QC(grouped_reads_ch, 'raw')
+        raw_qc_res = WORKFLOW_QC_RAW(grouped_reads_ch, 'raw')
         raw_qc_files = raw_qc_res.fastqc_files
     } else {
         raw_qc_files = Channel.empty()
@@ -111,7 +111,7 @@ workflow {
     // 3. QUALITY CONTROL (Trimmed HQ reads)
     // --------------------------------------------------------------------------
     if (!params.skip_qc) {
-        trimmed_qc_res = WORKFLOW_QC(trimmed_reads_ch, 'trimmed')
+        trimmed_qc_res = WORKFLOW_QC_TRIMMED(trimmed_reads_ch, 'trimmed')
         trimmed_qc_files = trimmed_qc_res.fastqc_files
     } else {
         trimmed_qc_files = Channel.empty()
