@@ -105,8 +105,13 @@ process GATK_FILTER_VARIANTS {
         -O ${sample_id}.filtered.vcf.gz 2>&1 | tee merge.log
 
     # 6. Extract counts for Table 2
-    SNP_COUNT=\$(bcftools view -v snps -f PASS ${sample_id}.filtered.vcf.gz 2>/dev/null | grep -v "^#" | wc -l || echo "0")
-    INDEL_COUNT=\$(bcftools view -v indels -f PASS ${sample_id}.filtered.vcf.gz 2>/dev/null | grep -v "^#" | wc -l || echo "0")
+    if command -v bcftools >/dev/null 2>&1; then
+        SNP_COUNT=\$(bcftools view -v snps -f PASS ${sample_id}.filtered.vcf.gz 2>/dev/null | grep -v "^#" | wc -l || echo "0")
+        INDEL_COUNT=\$(bcftools view -v indels -f PASS ${sample_id}.filtered.vcf.gz 2>/dev/null | grep -v "^#" | wc -l || echo "0")
+    else
+        SNP_COUNT=\$(zgrep -v "^#" ${sample_id}.snps.filtered.vcf.gz 2>/dev/null | awk '\$7 == "PASS"' | wc -l || echo "0")
+        INDEL_COUNT=\$(zgrep -v "^#" ${sample_id}.indels.filtered.vcf.gz 2>/dev/null | awk '\$7 == "PASS"' | wc -l || echo "0")
+    fi
     TOTAL_COUNT=\$((SNP_COUNT + INDEL_COUNT))
 
     cat > ${sample_id}.variant_counts.txt <<EOF

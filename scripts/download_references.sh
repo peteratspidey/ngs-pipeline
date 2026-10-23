@@ -31,9 +31,14 @@ else
 fi
 
 # Index FASTA with samtools
-if [ ! -f "${FASTA}.fai" ] && command -v samtools >/dev/null 2>&1; then
-    echo "Indexing hg19 with samtools faidx..."
-    samtools faidx "${FASTA}"
+if [ ! -f "${FASTA}.fai" ]; then
+    if command -v samtools >/dev/null 2>&1; then
+        echo "Indexing hg19 with samtools faidx..."
+        samtools faidx "${FASTA}"
+    elif command -v docker >/dev/null 2>&1; then
+        echo "Indexing hg19 with samtools via Docker..."
+        docker run --rm -v "${GENOMES_DIR}:/data" quay.io/biocontainers/mulled-v2-fe8faa35dbf6dc65a0f7f5d4ea12e31a79f73e40:f45ad9036aa41bb10f875a330fa877d8869018a1-0 samtools faidx /data/hg19.fa
+    fi
 fi
 
 # Create sequence dictionary with GATK or Picard
@@ -45,13 +50,21 @@ if [ ! -f "${DICT}" ]; then
     elif command -v picard >/dev/null 2>&1; then
         echo "Creating sequence dictionary with Picard..."
         picard CreateSequenceDictionary R="${FASTA}" O="${DICT}"
+    elif command -v docker >/dev/null 2>&1; then
+        echo "Creating sequence dictionary with GATK via Docker..."
+        docker run --rm -v "${GENOMES_DIR}:/data" broadinstitute/gatk:4.5.0.0 gatk CreateSequenceDictionary -R /data/hg19.fa -O /data/hg19.dict
     fi
 fi
 
 # Index for BWA-MEM
-if [ ! -f "${GENOMES_DIR}/hg19.bwt" ] && command -v bwa >/dev/null 2>&1; then
-    echo "Building BWA index for hg19..."
-    bwa index -p "${GENOMES_DIR}/hg19" "${FASTA}"
+if [ ! -f "${GENOMES_DIR}/hg19.bwt" ]; then
+    if command -v bwa >/dev/null 2>&1; then
+        echo "Building BWA index for hg19..."
+        bwa index -p "${GENOMES_DIR}/hg19" "${FASTA}"
+    elif command -v docker >/dev/null 2>&1; then
+        echo "Building BWA index for hg19 via Docker..."
+        docker run --rm -v "${GENOMES_DIR}:/data" quay.io/biocontainers/mulled-v2-fe8faa35dbf6dc65a0f7f5d4ea12e31a79f73e40:f45ad9036aa41bb10f875a330fa877d8869018a1-0 bwa index -p /data/hg19 /data/hg19.fa
+    fi
 fi
 
 # 2. Download Known Sites for BQSR and Variant Calling
