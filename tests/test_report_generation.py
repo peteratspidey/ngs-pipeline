@@ -14,7 +14,9 @@ import zipfile
 import subprocess
 import shutil
 
-TEST_DIR = "/home/peter/Desktop/NGS/ngs-pipeline/tests/mock_run"
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+PROJECT_ROOT = os.path.dirname(SCRIPT_DIR)
+TEST_DIR = os.path.join(SCRIPT_DIR, "mock_run")
 os.makedirs(TEST_DIR, exist_ok=True)
 
 # 1. Create mock FastQC data
@@ -87,7 +89,7 @@ chr1\t2000\t.\tT\tTA\t100\tPASS\tGENE=GCK;FUNC=exonic;EXONIC_FUNC=frameshift ins
 print("--> Testing annotate_vcf.py...")
 cmd_anno = [
     sys.executable,
-    "/home/peter/Desktop/NGS/ngs-pipeline/bin/annotate_vcf.py",
+    os.path.join(PROJECT_ROOT, "bin", "annotate_vcf.py"),
     "--vcf", mock_vcf,
     "--buildver", "hg19",
     "--out-prefix", os.path.join(TEST_DIR, "MODY-10")
@@ -100,7 +102,7 @@ print(f"ANNOVAR output generated: {os.path.join(TEST_DIR, 'MODY-10.hg19_multiann
 print("--> Testing generate_report_tables.py...")
 cmd_tables = [
     sys.executable,
-    "/home/peter/Desktop/NGS/ngs-pipeline/bin/generate_report_tables.py",
+    os.path.join(PROJECT_ROOT, "bin", "generate_report_tables.py"),
     "--samples", "MODY-10,MODY-11",
     "--raw-qc-dir", os.path.join(TEST_DIR, "fastqc_raw"),
     "--trimmed-qc-dir", os.path.join(TEST_DIR, "fastqc_trimmed"),
