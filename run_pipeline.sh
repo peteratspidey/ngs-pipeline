@@ -39,7 +39,14 @@ ANNOTATOR="annovar"
 PROFILE="standard"
 TEST_MODE=false
 
-if ! command -v docker >/dev/null 2>&1; then
+# Auto-detect container engine
+if command -v docker >/dev/null 2>&1; then
+    PROFILE="standard"
+elif command -v apptainer >/dev/null 2>&1; then
+    PROFILE="apptainer"
+elif command -v singularity >/dev/null 2>&1; then
+    PROFILE="singularity"
+else
     PROFILE="nocontainer"
 fi
 
@@ -54,7 +61,7 @@ Options:
   -f, --fasta <path>          Path to reference FASTA (default: resources/genomes/hg19/hg19.fa)
   -b, --bed <path>            Path to exome target BED file
   -o, --outdir <dir>          Output directory (default: ./results)
-  -p, --profile <profile>     Nextflow profile: standard (Docker), nocontainer (default: auto-detected)
+  -p, --profile <profile>     Nextflow profile: standard (Docker), quadro (high-perf workstation), apptainer, singularity, nocontainer
   -t, --test                  Run self-contained pipeline test with mock data
   -h, --help                  Show this help message
 

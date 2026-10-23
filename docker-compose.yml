@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  wes-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ngs-pipeline:latest
+    container_name: ngs-wes-pipeline
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - ./data:/data
+      - ./resources:/resources
+      - ./results:/results
+      - ./work:/work
+    environment:
+      - NXF_HOME=/work/.nextflow
+    command: ["run", "main.nf", "-profile", "standard", "--input", "/data/*_{R1,R2}*.fastq.gz", "--outdir", "/results"]

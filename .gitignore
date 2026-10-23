@@ -17,11 +17,17 @@ bin/gh
 # Intermediate analysis results
 results/
 test_results/
+tests/mock_run/
 
 # Python cache
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Archives and container caches
+*.tar.gz
+singularity_cache/
+apptainer_cache/
 
 # OS / Editor files
 .DS_Store

@@ -34,3 +34,4 @@ echo ""
 echo "To run the pipeline with these test files, run:"
 echo "  ./run_pipeline.sh"
 echo "======================================================================"
+
