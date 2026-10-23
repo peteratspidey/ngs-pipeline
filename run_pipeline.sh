@@ -82,27 +82,50 @@ ensure_nextflow() {
 }
 
 ensure_java() {
+    local has_java=false
+    local java_major=0
+
     if command -v java >/dev/null 2>&1; then
+        has_java=true
+        local ver_str
+        ver_str=$(java -version 2>&1 | head -n1)
+        java_major=$(echo "$ver_str" | sed -n 's/.*version "\([0-9]*\)\..*/\1/p')
+        if [ "$java_major" = "1" ]; then
+            java_major=$(echo "$ver_str" | sed -n 's/.*version "1\.\([0-9]*\)\..*/\1/p')
+        fi
+        java_major="${java_major:-0}"
+    fi
+
+    # Nextflow requires Java >= 17 (up to 26)
+    if [ "${has_java}" = true ] && [ "${java_major}" -ge 17 ] && [ "${java_major}" -le 26 ]; then
         return 0
     fi
 
-    echo "==> Java runtime not found on host."
+    if [ "${has_java}" = true ]; then
+        echo "==> Host Java version (${java_major}) is below the required Java 17."
+    else
+        echo "==> Java runtime not found on host."
+    fi
+
+    # If Docker is available, run Nextflow containerized (bundled Java 17)
     if command -v docker >/dev/null 2>&1; then
-        echo " Docker is available: will execute Nextflow containerized (no host Java required)."
+        echo "==> Docker detected! Nextflow will execute inside a container (bundled with Java 17)."
         USE_DOCKER_NEXTFLOW=true
         return 0
     fi
 
-    echo "==> Attempting auto-install of Java 17 runtime..."
+    echo "==> Attempting auto-install of OpenJDK 17..."
     if command -v apt-get >/dev/null 2>&1 && [ "$(id -u)" -eq 0 ]; then
-        apt-get update && apt-get install -y default-jre-headless
+        apt-get update && apt-get install -y openjdk-17-jre-headless
     elif command -v conda >/dev/null 2>&1; then
         conda install -y -c conda-forge openjdk=17
     else
         echo "========================================================================"
-        echo " Notice: Nextflow requires Java 11 or later (or Docker)."
-        echo " To install on Ubuntu/Debian: sudo apt-get update && sudo apt-get install -y default-jre-headless"
+        echo " ERROR: Nextflow requires Java 17 or later."
+        echo " Run this command on your machine to install Java 17:"
+        echo "   sudo apt update && sudo apt install -y openjdk-17-jre-headless"
         echo "========================================================================"
+        exit 1
     fi
 }
 
