@@ -118,6 +118,10 @@ process MARKDUPLICATES {
         --CREATE_INDEX true \
         --VALIDATION_STRINGENCY SILENT \
         2>&1 | tee markdup.log
+
+    if [ -f "${sample_id}.markdup.bai" ] && [ ! -f "${sample_id}.markdup.bam.bai" ]; then
+        ln -sf "${sample_id}.markdup.bai" "${sample_id}.markdup.bam.bai"
+    fi
     """
 }
 
@@ -157,7 +161,15 @@ process BQSR {
         -O ${sample_id}.bqsr.bam \
         2>&1 | tee bqsr2.log
     
-    samtools index ${sample_id}.bqsr.bam
+    if command -v samtools >/dev/null 2>&1; then
+        samtools index ${sample_id}.bqsr.bam
+    else
+        gatk BuildBamIndex -I ${sample_id}.bqsr.bam
+    fi
+
+    if [ -f "${sample_id}.bqsr.bai" ] && [ ! -f "${sample_id}.bqsr.bam.bai" ]; then
+        ln -sf "${sample_id}.bqsr.bai" "${sample_id}.bqsr.bam.bai"
+    fi
     """
 }
 

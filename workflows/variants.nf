@@ -104,6 +104,8 @@ process GATK_FILTER_VARIANTS {
         -I ${sample_id}.indels.filtered.vcf.gz \
         -O ${sample_id}.filtered.vcf.gz 2>&1 | tee merge.log
 
+    gatk IndexFeatureFile -I ${sample_id}.filtered.vcf.gz 2>&1 || true
+
     # 6. Extract counts for Table 2
     if command -v bcftools >/dev/null 2>&1; then
         SNP_COUNT=\$(bcftools view -v snps -f PASS ${sample_id}.filtered.vcf.gz 2>/dev/null | grep -v "^#" | wc -l || echo "0")
